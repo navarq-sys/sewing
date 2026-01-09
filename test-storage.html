@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест LocalStorage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow: auto;
+            max-height: 500px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Тест LocalStorage</h1>
+    
+    <div>
+        <button onclick="checkStorage()">Проверить данные</button>
+        <button onclick="clearStorage()">Очистить всё</button>
+        <button onclick="loadDefaults()">Загрузить демо данные</button>
+        <button onclick="loadDemoDataNow()" style="background: green; color: white; font-weight: bold;">▶ ЗАГРУЗИТЬ ДАННЫЕ СЕЙЧАС</button>
+    </div>
+    
+    <h2>Текущие данные:</h2>
+    <div id="output"></div>
+    
+    <script>
+        function checkStorage() {
+            const output = document.getElementById('output');
+            const data = {
+                services: localStorage.getItem('services'),
+                contact: localStorage.getItem('contact'),
+                categories: localStorage.getItem('categories'),
+                gallery: localStorage.getItem('gallery'),
+                location: localStorage.getItem('location'),
+                dataInitialized: localStorage.getItem('dataInitialized')
+            };
+            
+            let html = '';
+            for (const [key, value] of Object.entries(data)) {
+                if (value) {
+                    html += `<h3 class="success">${key}: ✓ Существует</h3>`;
+                    try {
+                        const parsed = JSON.parse(value);
+                        html += `<pre>${JSON.stringify(parsed, null, 2)}</pre>`;
+                    } catch (e) {
+                        html += `<pre>${value}</pre>`;
+                    }
+                } else {
+                    html += `<h3 class="error">${key}: ✗ Отсутствует</h3>`;
+                }
+            }
+            
+            output.innerHTML = html;
+        }
+        
+        function clearStorage() {
+            if (confirm('Очистить весь localStorage?')) {
+                localStorage.clear();
+                alert('LocalStorage очищен');
+                checkStorage();
+            }
+        }
+        
+        function loadDefaults() {
+            localStorage.removeItem('dataInitialized');
+            alert('Флаг удалён. Перезагрузите index.html чтобы загрузить демо данные.');
+            checkStorage();
+        }
+        
+        function loadDemoDataNow() {
+            // Default data
+            const defaultData = {
+                services: [
+                    {
+                        id: 1,
+                        title: { lv: "Apģērbu šūšana", ru: "Пошив одежды" },
+                        description: { lv: "Individuāla dizaina apģērbu izgatavošana", ru: "Изготовление одежды по индивидуальному дизайну" },
+                        price: { lv: "No 50€", ru: "От 50€" }
+                    },
+                    {
+                        id: 2,
+                        title: { lv: "Apģērbu labošana", ru: "Ремонт одежды" },
+                        description: { lv: "Profesionāla apģērbu labošana un pielāgošana", ru: "Профессиональный ремонт и подгонка одежды" },
+                        price: { lv: "No 15€", ru: "От 15€" }
+                    },
+                    {
+                        id: 3,
+                        title: { lv: "Kāzu kleitu šūšana", ru: "Пошив свадебных платьев" },
+                        description: { lv: "Unikālu kāzu kleitu dizains un šūšana", ru: "Дизайн и пошив уникальных свадебных платьев" },
+                        price: { lv: "No 300€", ru: "От 300€" }
+                    },
+                    {
+                        id: 4,
+                        title: { lv: "Aizkaru šūšana", ru: "Пошив штор" },
+                        description: { lv: "Mājas tekstila un aizkaru izgatavošana", ru: "Изготовление домашнего текстиля и штор" },
+                        price: { lv: "No 40€", ru: "От 40€" }
+                    }
+                ],
+                contact: {
+                    phone: "+371 12345678",
+                    email: "info@sewing.lv",
+                    address: { lv: "Brīvības iela 123, Rīga", ru: "ул. Бривибас 123, Рига" },
+                    hours: { lv: "P-Pk: 9:00-18:00, S: 10:00-15:00", ru: "Пн-Пт: 9:00-18:00, Сб: 10:00-15:00" },
+                    socials: {
+                        facebook: "https://facebook.com/sewing",
+                        instagram: "https://instagram.com/sewing",
+                        whatsapp: "+37112345678"
+                    },
+                    qrCode: ""
+                },
+                location: {
+                    lat: 56.9496,
+                    lng: 24.1052
+                },
+                categories: [
+                    {
+                        id: 1,
+                        name: { lv: "Vakara kleitas", ru: "Вечерние платья" },
+                        icon: "👗",
+                        coverImage: "https://images.unsplash.com/photo-1558769132-cb1aea441c75?w=500"
+                    },
+                    {
+                        id: 2,
+                        name: { lv: "Kāzu kleitas", ru: "Свадебные платья" },
+                        icon: "💒",
+                        coverImage: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=500"
+                    },
+                    {
+                        id: 3,
+                        name: { lv: "Kostīmi", ru: "Костюмы" },
+                        icon: "🤵",
+                        coverImage: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=500"
+                    },
+                    {
+                        id: 4,
+                        name: { lv: "Aizkari un tekstils", ru: "Шторы и текстиль" },
+                        icon: "🏠",
+                        coverImage: "https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?w=500"
+                    }
+                ],
+                gallery: [
+                    {
+                        id: 1,
+                        categoryId: 1,
+                        url: "https://images.unsplash.com/photo-1558769132-cb1aea441c75?w=500",
+                        title: { lv: "Eleganta vakara kleita", ru: "Элегантное вечернее платье" },
+                        description: { lv: "Melnā vakara kleita", ru: "Черное вечернее платье" }
+                    },
+                    {
+                        id: 2,
+                        categoryId: 2,
+                        url: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=500",
+                        title: { lv: "Kāzu kleita", ru: "Свадебное платье" },
+                        description: { lv: "Klasiska kāzu kleita", ru: "Классическое свадебное платье" }
+                    },
+                    {
+                        id: 3,
+                        categoryId: 3,
+                        url: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=500",
+                        title: { lv: "Vīriešu kostīms", ru: "Мужской костюм" },
+                        description: { lv: "Biznesa kostīms", ru: "Деловой костюм" }
+                    },
+                    {
+                        id: 4,
+                        categoryId: 4,
+                        url: "https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?w=500",
+                        title: { lv: "Dizaina aizkari", ru: "Дизайнерские шторы" },
+                        description: { lv: "Lina aizkari", ru: "Льняные шторы" }
+                    }
+                ]
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('services', JSON.stringify(defaultData.services));
+            localStorage.setItem('contact', JSON.stringify(defaultData.contact));
+            localStorage.setItem('categories', JSON.stringify(defaultData.categories));
+            localStorage.setItem('gallery', JSON.stringify(defaultData.gallery));
+            localStorage.setItem('location', JSON.stringify(defaultData.location));
+            localStorage.setItem('dataInitialized', 'true');
+            
+            alert('✅ Демо данные загружены! Теперь:\n1. Откройте index.html - увидите сайт с данными\n2. Откройте admin.html - сможете редактировать всё');
+            checkStorage();
+        }
+        
+        // Auto-check on load
+        checkStorage();
+    </script>
+</body>
+</html>

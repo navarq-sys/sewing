@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="title">Šūšanas Darbnīca | Швейная Мастерская</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body>
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+        <button onclick="switchLanguage('lv')" id="lang-lv" class="active">LV</button>
+        <button onclick="switchLanguage('ru')" id="lang-ru">RU</button>
+    </div>
+
+    <div class="container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <header>
+                <div class="logo-container" id="logo-container">
+                    <div class="logo-wrapper">
+                        <img id="site-logo" src="logo-ulla.svg" alt="Šūšanas darbnīca Ulla">
+                        <div class="logo-shine"></div>
+                    </div>
+                </div>
+                <h1 data-i18n="header" style="display: none;">Šūšanas Darbnīca "Ulla"</h1>
+                <p class="tagline" data-i18n="tagline">Profesionāli šūšanas pakalpojumi</p>
+            </header>
+
+            <!-- Services Section -->
+            <section class="services">
+                <h2 data-i18n="servicesTitle">Mūsu pakalpojumi</h2>
+                <div id="services-list" class="services-list">
+                    <!-- Services will be dynamically loaded -->
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section class="contact">
+                <h2 data-i18n="contactTitle">Kontakti</h2>
+                <div id="contact-info">
+                    <!-- Contact info will be dynamically loaded -->
+                </div>
+            </section>
+
+            <!-- Map Section -->
+            <section class="map-section">
+                <h2 data-i18n="locationTitle">Mūsu atrašanās vieta</h2>
+                <div class="map-address"></div>
+                <div id="map"></div>
+            </section>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <h2 data-i18n="galleryTitle">Mūsu darbi</h2>
+            <div id="gallery" class="gallery">
+                <button id="gallery-back-btn-top" onclick="backToCategories()" class="back-btn">← Назад к категориям</button>
+                <div id="gallery-categories"></div>
+                <div id="gallery-photos"></div>
+                <button id="gallery-back-btn-bottom" onclick="backToCategories()" class="back-btn">← Назад к категориям</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox for images -->
+    <div id="lightbox" class="lightbox">
+        <span class="close" onclick="closeLightbox()">&times;</span>
+        <span class="lightbox-prev" onclick="navigateLightbox(-1)">&#10094;</span>
+        <img id="lightbox-img" src="" alt="">
+        <span class="lightbox-next" onclick="navigateLightbox(1)">&#10095;</span>
+        <div class="lightbox-caption"></div>
+        <div class="lightbox-counter"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
