@@ -82,13 +82,13 @@ This guide provides information about free hosting services where you can deploy
   3. Configure build settings
   4. Deploy
 
-### 7. Heroku (Limited Free Tier)
+### 7. Heroku (No Free Tier)
 - **Best for:** Full-stack applications
 - **Features:**
   - Supports multiple languages
   - Add-ons for databases
-  - Note: Free tier has been discontinued, but eco tier is affordable
-- **Alternatives:** Railway, Render (better free options)
+  - Note: Free tier was permanently discontinued in November 2022
+- **Alternatives:** Railway, Render (recommended free options)
 
 ## Quick Deployment Examples
 

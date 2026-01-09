@@ -17,6 +17,5 @@ Looking for a free server to host and test your website? See [DEPLOYMENT.md](DEP
 **Для полноценных приложений / For full-stack applications:**
 - [Railway](https://railway.app) - $5/месяц кредита, поддержка БД
 - [Render](https://render.com) - Бесплатный tier для веб-сервисов
-- [Fly.io](https://fly.io) - Контейнеры, глобальная сеть
 
 📖 **Подробности в [DEPLOYMENT.md](DEPLOYMENT.md)**
