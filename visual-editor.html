@@ -173,6 +173,12 @@
             transition: all 0.3s;
         }
 
+        .btn-move-up, .btn-move-down {
+            background: #f39c12;
+            color: #fff;
+            padding: 5px 8px;
+        }
+
         .btn-visible {
             background: #06d6a0;
             color: #fff;
@@ -190,6 +196,27 @@
 
         .element-btn:hover {
             transform: scale(1.1);
+        }
+
+        .drag-handle {
+            cursor: move;
+            padding: 5px;
+            color: #667eea;
+        }
+
+        .element-item.dragging {
+            opacity: 0.5;
+            border: 2px dashed #667eea;
+        }
+
+        .element-order-badge {
+            background: #667eea;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 5px;
         }
 
         /* Настройки элемента */
@@ -471,6 +498,10 @@
                     <span id="preview-size">1400px × 800px</span>
                     <span style="opacity: 0.6;">|</span>
                     <span id="selected-element">Ничего не выбрано</span>
+                    <span style="opacity: 0.6;">|</span>
+                    <span style="color: #f39c12;">
+                        <i class="fas fa-arrows-alt"></i> Режим изменения порядка: <strong id="reorder-mode">Desktop</strong>
+                    </span>
                 </div>
             </div>
             <div class="preview-frame">

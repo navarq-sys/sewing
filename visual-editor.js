@@ -6,6 +6,15 @@ let selectedElement = null;
 let currentDevice = 'desktop';
 let currentMode = 'layout';
 
+// Порядок элементов для разных устройств
+if (!data.elementOrder) {
+    data.elementOrder = {
+        desktop: {},
+        tablet: {},
+        mobile: {}
+    };
+}
+
 // Структура элементов сайта
 const siteElements = [
     {
@@ -115,6 +124,39 @@ document.addEventListener('DOMContentLoaded', () => {
     setupIframeListener();
 });
 
+// Настройка слушателя iframe
+function setupIframeListener() {
+    const iframe = document.getElementById('preview-frame');
+    
+    iframe.addEventListener('load', () => {
+        // Применяем порядок элементов после загрузки
+        applyElementOrder();
+        
+        // Добавляем подсветку элементов при наведении
+        const iframeDoc = iframe.contentDocument;
+        siteElements.forEach(element => {
+            const el = iframeDoc.querySelector(element.selector);
+            if (el) {
+                el.style.cursor = 'pointer';
+                el.style.transition = 'outline 0.2s';
+                
+                el.addEventListener('mouseover', () => {
+                    el.style.outline = '2px solid #007bff';
+                });
+                
+                el.addEventListener('mouseout', () => {
+                    el.style.outline = 'none';
+                });
+                
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    selectElement(element.id);
+                });
+            }
+        });
+    });
+}
+
 // Загрузка списка элементов
 function loadElementsList() {
     const container = document.getElementById('elements-list');
@@ -131,20 +173,42 @@ function loadElementsList() {
         categoryTitle.textContent = category;
         categoryDiv.appendChild(categoryTitle);
         
-        const categoryElements = siteElements.filter(el => el.category === category);
+        let categoryElements = siteElements.filter(el => el.category === category);
+        
+        // Сортируем элементы по порядку для текущего устройства
+        const order = data.elementOrder[currentDevice] || {};
+        categoryElements.sort((a, b) => {
+            const orderA = order[a.id] || 0;
+            const orderB = order[b.id] || 0;
+            return orderA - orderB;
+        });
         
         categoryElements.forEach(element => {
             const elementDiv = document.createElement('div');
             elementDiv.className = 'element-item';
             elementDiv.id = `element-${element.id}`;
+            elementDiv.draggable = true;
+            elementDiv.dataset.elementId = element.id;
+            
+            const currentOrder = order[element.id] || 0;
             
             elementDiv.innerHTML = `
                 <div class="element-header">
                     <div class="element-name">
+                        <span class="drag-handle" title="Перетащить">
+                            <i class="fas fa-grip-vertical"></i>
+                        </span>
                         <i class="fas ${element.icon}"></i>
                         ${element.name}
+                        ${currentOrder !== 0 ? `<span class="element-order-badge">${currentOrder}</span>` : ''}
                     </div>
                     <div class="element-controls">
+                        <button class="element-btn btn-move-up" onclick="moveElement('${element.id}', 'up')" title="Вверх">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button class="element-btn btn-move-down" onclick="moveElement('${element.id}', 'down')" title="Вниз">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
                         <button class="element-btn ${element.visible ? 'btn-visible' : 'btn-hidden'}" 
                                 onclick="toggleVisibility('${element.id}')" 
                                 title="${element.visible ? 'Скрыть' : 'Показать'}">
@@ -159,6 +223,12 @@ function loadElementsList() {
                     ${generateSettings(element)}
                 </div>
             `;
+            
+            // Добавляем обработчики drag and drop
+            elementDiv.addEventListener('dragstart', handleDragStart);
+            elementDiv.addEventListener('dragover', handleDragOver);
+            elementDiv.addEventListener('drop', handleDrop);
+            elementDiv.addEventListener('dragend', handleDragEnd);
             
             categoryDiv.appendChild(elementDiv);
         });
@@ -393,24 +463,34 @@ function switchDevice(device) {
     const container = document.getElementById('preview-container');
     container.className = 'preview-container';
     
-    let width, height;
+    let width, height, deviceName;
     switch(device) {
         case 'mobile':
             container.classList.add('mobile');
             width = '375px';
             height = '667px';
+            deviceName = 'Mobile';
             break;
         case 'tablet':
             container.classList.add('tablet');
             width = '768px';
             height = '1024px';
+            deviceName = 'Tablet';
             break;
         default:
             width = '1400px';
             height = '800px';
+            deviceName = 'Desktop';
     }
     
     document.getElementById('preview-size').textContent = `${width} × ${height}`;
+    document.getElementById('reorder-mode').textContent = deviceName;
+    
+    // Перезагружаем список элементов с учетом нового порядка
+    loadElementsList();
+    
+    // Применяем порядок к iframe
+    applyElementOrder();
 }
 
 // Переключение режима
@@ -498,3 +578,139 @@ function previewSite() {
 function goBack() {
     window.location.href = 'admin.html';
 }
+
+// Функция перемещения элемента вверх/вниз
+function moveElement(elementId, direction) {
+    const order = data.elementOrder[currentDevice];
+    const elementIds = siteElements.map(el => el.id);
+    
+    // Если порядка нет, создаем дефолтный
+    if (!order || Object.keys(order).length === 0) {
+        elementIds.forEach((id, index) => {
+            order[id] = index;
+        });
+    }
+    
+    // Сортируем элементы по текущему порядку
+    const sortedElements = elementIds.sort((a, b) => 
+        (order[a] !== undefined ? order[a] : 999) - (order[b] !== undefined ? order[b] : 999)
+    );
+    
+    const currentIndex = sortedElements.indexOf(elementId);
+    if (currentIndex === -1) return;
+    
+    const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    
+    // Проверяем границы
+    if (newIndex < 0 || newIndex >= sortedElements.length) return;
+    
+    // Меняем местами
+    const temp = sortedElements[currentIndex];
+    sortedElements[currentIndex] = sortedElements[newIndex];
+    sortedElements[newIndex] = temp;
+    
+    // Обновляем порядок
+    sortedElements.forEach((id, index) => {
+        order[id] = index;
+    });
+    
+    data.elementOrder[currentDevice] = order;
+    saveSiteData();
+    
+    // Обновляем UI
+    loadElementsList();
+    applyElementOrder();
+}
+
+// Drag and Drop обработчики
+let draggedElement = null;
+
+function handleDragStart(e) {
+    draggedElement = e.target.closest('.element-item');
+    draggedElement.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', draggedElement.innerHTML);
+}
+
+function handleDragOver(e) {
+    if (e.preventDefault) {
+        e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    
+    const target = e.target.closest('.element-item');
+    if (target && target !== draggedElement) {
+        const list = document.getElementById('elements-list');
+        const allItems = Array.from(list.querySelectorAll('.element-item'));
+        const draggedIndex = allItems.indexOf(draggedElement);
+        const targetIndex = allItems.indexOf(target);
+        
+        if (draggedIndex < targetIndex) {
+            target.parentNode.insertBefore(draggedElement, target.nextSibling);
+        } else {
+            target.parentNode.insertBefore(draggedElement, target);
+        }
+    }
+    
+    return false;
+}
+
+function handleDrop(e) {
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+    
+    // Получаем новый порядок из DOM
+    const list = document.getElementById('elements-list');
+    const items = list.querySelectorAll('.element-item');
+    const order = data.elementOrder[currentDevice] || {};
+    
+    items.forEach((item, index) => {
+        const elementId = item.dataset.element;
+        order[elementId] = index;
+    });
+    
+    data.elementOrder[currentDevice] = order;
+    saveSiteData();
+    
+    // Обновляем UI с новыми номерами
+    loadElementsList();
+    applyElementOrder();
+    
+    return false;
+}
+
+function handleDragEnd(e) {
+    if (draggedElement) {
+        draggedElement.classList.remove('dragging');
+    }
+    
+    // Убираем все визуальные эффекты
+    document.querySelectorAll('.element-item').forEach(item => {
+        item.classList.remove('over');
+    });
+}
+
+// Применение порядка элементов в iframe
+function applyElementOrder() {
+    const iframe = document.getElementById('preview-frame');
+    if (!iframe || !iframe.contentDocument) return;
+    
+    const order = data.elementOrder[currentDevice] || {};
+    
+    // Применяем CSS order к элементам
+    siteElements.forEach(element => {
+        const el = iframe.contentDocument.querySelector(element.selector);
+        if (el && order[element.id] !== undefined) {
+            el.style.order = order[element.id];
+        }
+    });
+    
+    // Делаем контейнер flexbox, если еще не сделали
+    const main = iframe.contentDocument.querySelector('main');
+    if (main) {
+        main.style.display = 'flex';
+        main.style.flexDirection = 'column';
+    }
+}
+

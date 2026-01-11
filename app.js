@@ -695,8 +695,65 @@ document.addEventListener('DOMContentLoaded', () => {
     switchLanguage(currentLang);
     initMap();
     
+    // Применяем порядок элементов в зависимости от размера экрана
+    applyResponsiveOrder();
+    
     // Запускаем автопроверку изменений
     startAutoCheck();
+});
+
+// Применение порядка элементов для разных устройств
+function applyResponsiveOrder() {
+    const data = loadAllData();
+    if (!data.elementOrder) return;
+    
+    // Определяем текущее устройство по ширине экрана
+    const width = window.innerWidth;
+    let device = 'desktop';
+    
+    if (width <= 768) {
+        device = 'mobile';
+    } else if (width <= 1024) {
+        device = 'tablet';
+    }
+    
+    const order = data.elementOrder[device];
+    if (!order) return;
+    
+    // Мапинг ID элементов к селекторам
+    const selectorMap = {
+        'logo': '.logo-wrapper',
+        'tagline': '.tagline',
+        'services-section': '.services',
+        'contact-section': '.contact',
+        'map-section': '.map-section'
+    };
+    
+    // Делаем main flexbox контейнером
+    const main = document.querySelector('main');
+    if (main) {
+        main.style.display = 'flex';
+        main.style.flexDirection = 'column';
+        
+        // Применяем порядок
+        Object.keys(order).forEach(elementId => {
+            const selector = selectorMap[elementId];
+            if (selector) {
+                const element = document.querySelector(selector);
+                if (element) {
+                    element.style.order = order[elementId];
+                }
+            }
+        });
+    }
+}
+
+// Обновляем порядок при изменении размера окна
+window.addEventListener('resize', () => {
+    clearTimeout(window.resizeTimer);
+    window.resizeTimer = setTimeout(() => {
+        applyResponsiveOrder();
+    }, 250);
 });
     }, 2000);
 });
