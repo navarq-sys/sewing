@@ -213,6 +213,9 @@ function switchLanguage(lang) {
     loadContact();
     loadCategories();
     updateMapAddress();
+    
+    // Применяем сохраненные стили из Visual Editor
+    applyVisualEditorStyles();
 }
 
 // Загрузка логотипа
@@ -634,7 +637,66 @@ document.addEventListener('DOMContentLoaded', () => {
             loadCategories();
             initMap();
             updateMapAddress();
+            applyVisualEditorStyles();
             lastData = newDataStr;
         }
+    }, 2000);
+}
+
+// Применение стилей из Visual Editor
+function applyVisualEditorStyles() {
+    if (!data.visualEditorStyles) return;
+    
+    const styles = data.visualEditorStyles;
+    
+    Object.keys(styles).forEach(elementId => {
+        const elementData = styles[elementId];
+        
+        // Находим селектор элемента
+        let selector = null;
+        
+        // Мапинг ID к селекторам
+        const selectorMap = {
+            'logo': '#site-logo',
+            'logo-text': '#logo-text-overlay',
+            'tagline': '.tagline',
+            'services-section': '.services',
+            'services-title': '.services h2',
+            'contact-section': '.contact',
+            'contact-title': '.contact h2',
+            'map-section': '.map-section',
+            'map-title': '.map-section h2',
+            'left-panel': '.left-panel',
+            'right-panel': '.right-panel'
+        };
+        
+        selector = selectorMap[elementId];
+        
+        if (selector) {
+            const element = document.querySelector(selector);
+            if (element) {
+                // Применяем видимость
+                if (elementData.visible === false) {
+                    element.style.display = 'none';
+                }
+                
+                // Применяем сохраненные стили
+                if (elementData.style) {
+                    element.style.cssText += '; ' + elementData.style;
+                }
+            }
+        }
+    });
+}
+
+// Инициализация
+document.addEventListener('DOMContentLoaded', () => {
+    loadAllData();
+    switchLanguage(currentLang);
+    initMap();
+    
+    // Запускаем автопроверку изменений
+    startAutoCheck();
+});
     }, 2000);
 });

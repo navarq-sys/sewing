@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 Visual Editor - Швейная Мастерская</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .editor-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Левая панель управления */
+        .control-panel {
+            width: 320px;
+            background: #16213e;
+            border-right: 2px solid #0f3460;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-bottom: 2px solid #0f3460;
+        }
+
+        .panel-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-save {
+            background: #06d6a0;
+            color: #fff;
+        }
+
+        .btn-preview {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .btn-back {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .action-buttons button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* Вкладки режимов */
+        .mode-tabs {
+            display: flex;
+            background: #0f3460;
+            border-bottom: 2px solid #533483;
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .mode-tab.active {
+            background: #16213e;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .mode-tab:hover {
+            background: #1a2942;
+        }
+
+        /* Список элементов */
+        .elements-list {
+            padding: 20px;
+        }
+
+        .element-category {
+            margin-bottom: 20px;
+        }
+
+        .category-title {
+            font-size: 0.9rem;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .element-item {
+            background: #0f3460;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .element-item:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .element-item.selected {
+            border-color: #06d6a0;
+            background: #1a2942;
+        }
+
+        .element-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .element-name {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .element-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .element-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .btn-visible {
+            background: #06d6a0;
+            color: #fff;
+        }
+
+        .btn-hidden {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .btn-edit {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .element-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Настройки элемента */
+        .element-settings {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: #1a2942;
+            border-radius: 8px;
+        }
+
+        .element-settings.active {
+            display: block;
+        }
+
+        .setting-group {
+            margin-bottom: 15px;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            color: #a0a0a0;
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #0f3460;
+            border-radius: 5px;
+            background: #16213e;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .setting-range {
+            width: 100%;
+        }
+
+        .setting-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* Превью область */
+        .preview-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #0f1419;
+        }
+
+        .preview-toolbar {
+            background: #16213e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #0f3460;
+        }
+
+        .device-switcher {
+            display: flex;
+            gap: 10px;
+        }
+
+        .device-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: transparent;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .device-btn.active {
+            background: #667eea;
+        }
+
+        .device-btn:hover {
+            background: #764ba2;
+            border-color: #764ba2;
+        }
+
+        .preview-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+
+        .preview-frame {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .preview-container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transition: all 0.3s;
+            width: 100%;
+            max-width: 1400px;
+            min-height: 800px;
+        }
+
+        .preview-container.mobile {
+            max-width: 375px;
+        }
+
+        .preview-container.tablet {
+            max-width: 768px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
+            min-height: 800px;
+        }
+
+        /* Правая панель свойств */
+        .properties-panel {
+            width: 300px;
+            background: #16213e;
+            border-left: 2px solid #0f3460;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .properties-panel.active {
+            display: block;
+        }
+
+        .properties-header {
+            padding: 20px;
+            background: #0f3460;
+            border-bottom: 2px solid #533483;
+        }
+
+        .properties-content {
+            padding: 20px;
+        }
+
+        .property-section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Loader */
+        .loader {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            padding: 30px;
+            border-radius: 15px;
+            z-index: 10000;
+        }
+
+        .loader.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #0f3460;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f3460;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="editor-container">
+        <!-- Левая панель управления -->
+        <div class="control-panel">
+            <div class="panel-header">
+                <h1><i class="fas fa-paint-brush"></i> Visual Editor</h1>
+                <p style="opacity: 0.8; font-size: 0.9rem;">Управляйте элементами сайта визуально</p>
+                <div class="action-buttons">
+                    <button class="btn-save" onclick="saveChanges()">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                    <button class="btn-preview" onclick="previewSite()">
+                        <i class="fas fa-eye"></i> Превью
+                    </button>
+                    <button class="btn-back" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                </div>
+            </div>
+
+            <!-- Вкладки режимов -->
+            <div class="mode-tabs">
+                <button class="mode-tab active" onclick="switchMode('layout')">
+                    <i class="fas fa-th"></i> Макет
+                </button>
+                <button class="mode-tab" onclick="switchMode('style')">
+                    <i class="fas fa-palette"></i> Стили
+                </button>
+                <button class="mode-tab" onclick="switchMode('mobile')">
+                    <i class="fas fa-mobile"></i> Адаптив
+                </button>
+            </div>
+
+            <!-- Список элементов -->
+            <div class="elements-list" id="elements-list">
+                <!-- Будет заполнено динамически -->
+            </div>
+        </div>
+
+        <!-- Центральная область превью -->
+        <div class="preview-area">
+            <div class="preview-toolbar">
+                <div class="device-switcher">
+                    <button class="device-btn active" data-device="desktop" onclick="switchDevice('desktop')">
+                        <i class="fas fa-desktop"></i> Desktop
+                    </button>
+                    <button class="device-btn" data-device="tablet" onclick="switchDevice('tablet')">
+                        <i class="fas fa-tablet"></i> Tablet
+                    </button>
+                    <button class="device-btn" data-device="mobile" onclick="switchDevice('mobile')">
+                        <i class="fas fa-mobile"></i> Mobile
+                    </button>
+                </div>
+                <div class="preview-info">
+                    <span id="preview-size">1400px × 800px</span>
+                    <span style="opacity: 0.6;">|</span>
+                    <span id="selected-element">Ничего не выбрано</span>
+                </div>
+            </div>
+            <div class="preview-frame">
+                <div class="preview-container" id="preview-container">
+                    <iframe id="preview-iframe" src="index.html"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Правая панель свойств -->
+        <div class="properties-panel" id="properties-panel">
+            <div class="properties-header">
+                <h2><i class="fas fa-cog"></i> Свойства элемента</h2>
+            </div>
+            <div class="properties-content" id="properties-content">
+                <!-- Будет заполнено при выборе элемента -->
+            </div>
+        </div>
+    </div>
+
+    <script src="visual-editor.js"></script>
+</body>
+</html>
