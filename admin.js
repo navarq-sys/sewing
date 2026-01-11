@@ -765,6 +765,12 @@ function uploadLogo(event) {
         return;
     }
     
+    // Проверка размера файла (максимум 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        alert('❌ Файл слишком большой. Максимальный размер: 2MB');
+        return;
+    }
+    
     const reader = new FileReader();
     reader.onload = function(e) {
         const logoData = e.target.result;
@@ -778,23 +784,28 @@ function uploadLogo(event) {
         previewImg.style.display = 'block';
         noLogoText.style.display = 'none';
         
-        alert('✓ Логотип загружен!');
+        alert('✓ Логотип загружен и сохранен!');
     };
     reader.readAsDataURL(file);
 }
 
 function removeLogo() {
-    if (confirm('Удалить логотип?')) {
+    if (confirm('Удалить пользовательский логотип и вернуться к дефолтному?')) {
         delete data.logo;
         saveData();
         
         const previewImg = document.getElementById('preview-logo');
         const noLogoText = document.getElementById('no-logo-text');
-        previewImg.style.display = 'none';
+        
+        // Показываем дефолтный логотип
+        previewImg.src = 'logo-ulla.jpg';
+        previewImg.style.display = 'block';
+        noLogoText.textContent = 'Используется дефолтный логотип';
         noLogoText.style.display = 'block';
+        noLogoText.style.color = '#3498db';
         
         document.getElementById('logo-input').value = '';
-        alert('✓ Логотип удален');
+        alert('✓ Пользовательский логотип удален. Восстановлен дефолтный логотип.');
     }
 }
 
@@ -803,12 +814,17 @@ function loadSettings() {
     const noLogoText = document.getElementById('no-logo-text');
     
     if (data.logo) {
+        // Показываем пользовательский логотип
         previewImg.src = data.logo;
         previewImg.style.display = 'block';
         noLogoText.style.display = 'none';
     } else {
-        previewImg.style.display = 'none';
+        // Показываем дефолтный логотип
+        previewImg.src = 'logo-ulla.jpg';
+        previewImg.style.display = 'block';
+        noLogoText.textContent = 'Используется дефолтный логотип';
         noLogoText.style.display = 'block';
+        noLogoText.style.color = '#3498db';
     }
     
     // Загружаем настройку видимости услуг
@@ -834,4 +850,5 @@ function toggleServicesVisibility() {
 document.addEventListener('DOMContentLoaded', () => {
     if (!checkAuth()) return;
     loadServices();
+    loadSettings();
 });

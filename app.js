@@ -223,8 +223,11 @@ function loadLogo() {
     // Если в данных есть пользовательский логотип, используем его
     if (data.logo) {
         logoImg.src = data.logo;
+    } else {
+        // Иначе используем дефолтный логотип из HTML
+        logoImg.src = 'logo-ulla.jpg';
     }
-    // В любом случае показываем логотип (он уже задан в HTML)
+    // В любом случае показываем логотип
     logoImg.style.display = 'block';
 }
 
