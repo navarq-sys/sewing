@@ -6,31 +6,77 @@
     <title>Админ панель - Швейная Мастерская</title>
     <link rel="stylesheet" href="admin-styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
     <div class="admin-container">
-        <header class="admin-header">
-            <h1>🔧 Админ панель</h1>
-            <div class="header-actions">
-                <button onclick="window.location.href='visual-editor.html'" class="btn-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;" title="Открыть визуальный редактор">
-                    🎨 Visual Editor
-                </button>
-                <button onclick="previewSite()" class="btn-preview" title="Открыть сайт в новой вкладке">👁️ Просмотр</button>
-                <button onclick="resetData()" class="btn-reset" title="Загрузить демо данные">🔄 Сбросить</button>
-                <button onclick="window.location.href='index.html'" class="btn-back">← Вернуться на сайт</button>
-                <button onclick="logout()" class="btn-logout">Выйти</button>
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>🧵 Ulla Admin</h1>
+                <p>Панель управления сайтом</p>
             </div>
-        </header>
+            
+            <nav class="sidebar-menu">
+                <button class="menu-item active" onclick="showTab('services')">
+                    <i class="fas fa-scissors"></i>
+                    <span>Услуги</span>
+                </button>
+                <button class="menu-item" onclick="showTab('contact')">
+                    <i class="fas fa-address-book"></i>
+                    <span>Контакты</span>
+                </button>
+                <button class="menu-item" onclick="showTab('categories')">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Категории</span>
+                </button>
+                <button class="menu-item" onclick="showTab('gallery')">
+                    <i class="fas fa-images"></i>
+                    <span>Галерея</span>
+                </button>
+                <button class="menu-item" onclick="showTab('location')">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Местоположение</span>
+                </button>
+                <button class="menu-item" onclick="showTab('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>Настройки</span>
+                </button>
+                <button class="menu-item" onclick="showTab('debug')" style="color: #ef4444;">
+                    <i class="fas fa-bug"></i>
+                    <span>Диагностика</span>
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button onclick="window.location.href='visual-editor.html'" class="btn btn-primary" style="width: 100%; margin-bottom: 10px;">
+                    <i class="fas fa-paint-brush"></i> Visual Editor
+                </button>
+                <button onclick="window.location.href='index.html'" class="btn-back" style="width: 100%;">
+                    <i class="fas fa-arrow-left"></i> На сайт
+                </button>
+            </div>
+        </aside>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('services')">Услуги</button>
-            <button class="tab-btn" onclick="showTab('contact')">Контакты</button>
-            <button class="tab-btn" onclick="showTab('categories')">Категории</button>
-            <button class="tab-btn" onclick="showTab('gallery')">Галерея</button>
-            <button class="tab-btn" onclick="showTab('location')">Местоположение</button>
-            <button class="tab-btn" onclick="showTab('settings')">⚙️ Настройки</button>
-            <button class="tab-btn" onclick="showTab('debug')" style="background: #e74c3c;">🔍 Диагностика</button>
-        </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="admin-header">
+                <div class="header-title">
+                    <h2>Добро пожаловать! 👋</h2>
+                    <p>Управляйте контентом вашего сайта</p>
+                </div>
+                <div class="header-actions">
+                    <button onclick="previewSite()" class="btn-preview">
+                        <i class="fas fa-eye"></i> Просмотр
+                    </button>
+                    <button onclick="resetData()" class="btn-reset">
+                        <i class="fas fa-redo"></i> Сбросить
+                    </button>
+                    <button onclick="logout()" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Выйти
+                    </button>
+                </div>
+            </header>
 
         <!-- Settings Tab -->
         <div id="settings-tab" class="tab-content">
