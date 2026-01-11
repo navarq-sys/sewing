@@ -247,6 +247,117 @@
 
                     <button onclick="saveServicesStyle()" class="btn-save" style="margin-top: 20px; width: 100%;">💾 Сохранить стили услуг</button>
                 </div>
+
+                <hr style="margin: 40px 0; border: none; border-top: 2px solid #e0e0e0;">
+
+                <h3>📞 Стилизация раздела контактов</h3>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    
+                    <h4 style="margin-top: 0; color: #2c3e50;">Заголовок "Kontakti"</h4>
+                    
+                    <div class="form-group">
+                        <label>Размер шрифта заголовка (px):</label>
+                        <input type="range" id="contact-title-size" min="16" max="48" value="28" oninput="document.getElementById('contact-title-size-value').textContent = this.value + 'px'">
+                        <span id="contact-title-size-value" style="font-weight: bold; color: #3498db;">28px</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Шрифт заголовка:</label>
+                        <select id="contact-title-font" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI</option>
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                            <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Цвет заголовка:</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="color" id="contact-title-color" value="#2c3e50" style="width: 60px; height: 40px; cursor: pointer; border: none; border-radius: 5px;">
+                            <input type="text" id="contact-title-color-hex" value="#2c3e50" oninput="document.getElementById('contact-title-color').value = this.value" style="width: 100px; padding: 8px; border: 2px solid #ddd; border-radius: 5px;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Жирность заголовка:</label>
+                        <select id="contact-title-weight" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="normal">Обычный</option>
+                            <option value="bold" selected>Жирный</option>
+                            <option value="bolder">Очень жирный</option>
+                        </select>
+                    </div>
+
+                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+
+                    <h4 style="color: #2c3e50;">Текст контактов</h4>
+
+                    <div class="form-group">
+                        <label>Размер шрифта (px):</label>
+                        <input type="range" id="contact-text-size" min="12" max="24" value="16" oninput="document.getElementById('contact-text-size-value').textContent = this.value + 'px'">
+                        <span id="contact-text-size-value" style="font-weight: bold; color: #3498db;">16px</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Шрифт текста:</label>
+                        <select id="contact-text-font" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI</option>
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                        </select>
+                    </div>
+
+                    <button onclick="saveContactStyle()" class="btn-save" style="margin-top: 20px; width: 100%;">💾 Сохранить стили контактов</button>
+                </div>
+
+                <hr style="margin: 40px 0; border: none; border-top: 2px solid #e0e0e0;">
+
+                <h3>📍 Стилизация раздела местоположения</h3>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    
+                    <h4 style="margin-top: 0; color: #2c3e50;">Заголовок "Mūsu atrašanās vieta"</h4>
+                    
+                    <div class="form-group">
+                        <label>Размер шрифта заголовка (px):</label>
+                        <input type="range" id="location-title-size" min="16" max="48" value="28" oninput="document.getElementById('location-title-size-value').textContent = this.value + 'px'">
+                        <span id="location-title-size-value" style="font-weight: bold; color: #3498db;">28px</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Шрифт заголовка:</label>
+                        <select id="location-title-font" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI</option>
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                            <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Цвет заголовка:</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="color" id="location-title-color" value="#2c3e50" style="width: 60px; height: 40px; cursor: pointer; border: none; border-radius: 5px;">
+                            <input type="text" id="location-title-color-hex" value="#2c3e50" oninput="document.getElementById('location-title-color').value = this.value" style="width: 100px; padding: 8px; border: 2px solid #ddd; border-radius: 5px;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Жирность заголовка:</label>
+                        <select id="location-title-weight" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="normal">Обычный</option>
+                            <option value="bold" selected>Жирный</option>
+                            <option value="bolder">Очень жирный</option>
+                        </select>
+                    </div>
+
+                    <button onclick="saveLocationStyle()" class="btn-save" style="margin-top: 20px; width: 100%;">💾 Сохранить стили местоположения</button>
+                </div>
             </div>
         </div>
 

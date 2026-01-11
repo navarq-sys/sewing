@@ -362,17 +362,26 @@ function applyServicesStyles() {
 // Загрузка контактов
 function loadContact() {
     const contactInfo = document.getElementById('contact-info');
+    
+    // Применяем стили к заголовку секции контактов
+    applyContactStyles();
+    
+    // Получаем стили для текста контактов
+    const style = data.contactStyle || {};
+    const textFont = style.textFont || "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    const textSize = style.textSize || 16;
+    
     contactInfo.innerHTML = `
-        <div class="contact-item">
+        <div class="contact-item" style="font-family: ${textFont}; font-size: ${textSize}px;">
             <strong data-i18n="phone">${translations[currentLang].phone}:</strong> ${data.contact.phone}
         </div>
-        <div class="contact-item">
+        <div class="contact-item" style="font-family: ${textFont}; font-size: ${textSize}px;">
             <strong data-i18n="email">${translations[currentLang].email}:</strong> ${data.contact.email}
         </div>
-        <div class="contact-item">
+        <div class="contact-item" style="font-family: ${textFont}; font-size: ${textSize}px;">
             <strong data-i18n="address">${translations[currentLang].address}:</strong> ${data.contact.address[currentLang]}
         </div>
-        <div class="contact-item">
+        <div class="contact-item" style="font-family: ${textFont}; font-size: ${textSize}px;">
             <strong data-i18n="hours">${translations[currentLang].hours}:</strong> ${data.contact.hours[currentLang]}
         </div>
         <div class="social-links">
@@ -382,6 +391,27 @@ function loadContact() {
         </div>
         ${data.contact.qrCode ? `<div class="qr-code"><img src="${data.contact.qrCode}" alt="QR Code"></div>` : ''}
     `;
+}
+
+// Применение стилей к заголовку секции контактов
+function applyContactStyles() {
+    const contactTitle = document.querySelector('.contact h2');
+    if (!contactTitle) return;
+    
+    const style = data.contactStyle || {};
+    
+    if (style.titleSize) {
+        contactTitle.style.fontSize = style.titleSize + 'px';
+    }
+    if (style.titleFont) {
+        contactTitle.style.fontFamily = style.titleFont;
+    }
+    if (style.titleColor) {
+        contactTitle.style.color = style.titleColor;
+    }
+    if (style.titleWeight) {
+        contactTitle.style.fontWeight = style.titleWeight;
+    }
 }
 
 // Загрузка категорий
@@ -539,6 +569,30 @@ function updateMapAddress() {
     const addressHeader = document.querySelector('.map-address');
     if (addressHeader) {
         addressHeader.textContent = data.contact.address[currentLang];
+    }
+    
+    // Применяем стили к заголовку секции местоположения
+    applyLocationStyles();
+}
+
+// Применение стилей к заголовку секции местоположения
+function applyLocationStyles() {
+    const locationTitle = document.querySelector('.map-section h2');
+    if (!locationTitle) return;
+    
+    const style = data.locationStyle || {};
+    
+    if (style.titleSize) {
+        locationTitle.style.fontSize = style.titleSize + 'px';
+    }
+    if (style.titleFont) {
+        locationTitle.style.fontFamily = style.titleFont;
+    }
+    if (style.titleColor) {
+        locationTitle.style.color = style.titleColor;
+    }
+    if (style.titleWeight) {
+        locationTitle.style.fontWeight = style.titleWeight;
     }
 }
 

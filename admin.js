@@ -871,6 +871,12 @@ function loadSettings() {
     
     // Загружаем стили услуг
     loadServicesStyle();
+    
+    // Загружаем стили контактов
+    loadContactStyle();
+    
+    // Загружаем стили местоположения
+    loadLocationStyle();
 }
 
 function toggleServicesVisibility() {
@@ -1075,6 +1081,80 @@ function saveServicesStyle() {
     
     saveData();
     alert('✓ Стили услуг сохранены! Обновите главную страницу, чтобы увидеть изменения.');
+}
+
+// СТИЛИЗАЦИЯ КОНТАКТОВ
+function loadContactStyle() {
+    if (!data.contactStyle) {
+        data.contactStyle = {
+            titleSize: 28,
+            titleFont: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+            titleColor: '#2c3e50',
+            titleWeight: 'bold',
+            textSize: 16,
+            textFont: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+        };
+    }
+    
+    const style = data.contactStyle;
+    
+    document.getElementById('contact-title-size').value = style.titleSize || 28;
+    document.getElementById('contact-title-size-value').textContent = (style.titleSize || 28) + 'px';
+    document.getElementById('contact-title-font').value = style.titleFont || "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    document.getElementById('contact-title-color').value = style.titleColor || '#2c3e50';
+    document.getElementById('contact-title-color-hex').value = style.titleColor || '#2c3e50';
+    document.getElementById('contact-title-weight').value = style.titleWeight || 'bold';
+    
+    document.getElementById('contact-text-size').value = style.textSize || 16;
+    document.getElementById('contact-text-size-value').textContent = (style.textSize || 16) + 'px';
+    document.getElementById('contact-text-font').value = style.textFont || "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+}
+
+function saveContactStyle() {
+    data.contactStyle = {
+        titleSize: parseInt(document.getElementById('contact-title-size').value),
+        titleFont: document.getElementById('contact-title-font').value,
+        titleColor: document.getElementById('contact-title-color').value,
+        titleWeight: document.getElementById('contact-title-weight').value,
+        textSize: parseInt(document.getElementById('contact-text-size').value),
+        textFont: document.getElementById('contact-text-font').value
+    };
+    
+    saveData();
+    alert('✓ Стили контактов сохранены! Обновите главную страницу, чтобы увидеть изменения.');
+}
+
+// СТИЛИЗАЦИЯ МЕСТОПОЛОЖЕНИЯ
+function loadLocationStyle() {
+    if (!data.locationStyle) {
+        data.locationStyle = {
+            titleSize: 28,
+            titleFont: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+            titleColor: '#2c3e50',
+            titleWeight: 'bold'
+        };
+    }
+    
+    const style = data.locationStyle;
+    
+    document.getElementById('location-title-size').value = style.titleSize || 28;
+    document.getElementById('location-title-size-value').textContent = (style.titleSize || 28) + 'px';
+    document.getElementById('location-title-font').value = style.titleFont || "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    document.getElementById('location-title-color').value = style.titleColor || '#2c3e50';
+    document.getElementById('location-title-color-hex').value = style.titleColor || '#2c3e50';
+    document.getElementById('location-title-weight').value = style.titleWeight || 'bold';
+}
+
+function saveLocationStyle() {
+    data.locationStyle = {
+        titleSize: parseInt(document.getElementById('location-title-size').value),
+        titleFont: document.getElementById('location-title-font').value,
+        titleColor: document.getElementById('location-title-color').value,
+        titleWeight: document.getElementById('location-title-weight').value
+    };
+    
+    saveData();
+    alert('✓ Стили местоположения сохранены! Обновите главную страницу, чтобы увидеть изменения.');
 }
 
 // Инициализация
