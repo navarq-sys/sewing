@@ -54,6 +54,98 @@
 
                 <hr style="margin: 40px 0; border: none; border-top: 2px solid #e0e0e0;">
 
+                <h3>Текст на логотипе</h3>
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <input type="checkbox" id="show-logo-text" onchange="toggleLogoText()" style="width: 20px; height: 20px; cursor: pointer;">
+                        <strong>Показывать текст на логотипе</strong>
+                    </label>
+                </div>
+
+                <div id="logo-text-settings" style="display: none; background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Текст:</label>
+                        <input type="text" id="logo-text-content" placeholder="Например: ULLA" oninput="updateLogoTextPreview()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Размер шрифта (px):</label>
+                        <input type="range" id="logo-text-size" min="12" max="72" value="24" oninput="updateLogoTextPreview(); document.getElementById('text-size-value').textContent = this.value + 'px'">
+                        <span id="text-size-value" style="font-weight: bold; color: #3498db;">24px</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Цвет текста:</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="color" id="logo-text-color" value="#ffffff" onchange="updateLogoTextPreview()" style="width: 60px; height: 40px; cursor: pointer; border: none; border-radius: 5px;">
+                            <input type="text" id="logo-text-color-hex" value="#ffffff" oninput="document.getElementById('logo-text-color').value = this.value; updateLogoTextPreview()" style="width: 100px; padding: 8px; border: 2px solid #ddd; border-radius: 5px;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Стиль шрифта:</label>
+                        <select id="logo-text-font" onchange="updateLogoTextPreview()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="'Courier New', monospace">Courier New</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                            <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
+                            <option value="Impact, fantasy">Impact</option>
+                            <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Жирность:</label>
+                        <select id="logo-text-weight" onchange="updateLogoTextPreview()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="normal">Обычный</option>
+                            <option value="bold" selected>Жирный</option>
+                            <option value="lighter">Тонкий</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Горизонтальная позиция:</label>
+                        <select id="logo-text-align" onchange="updateLogoTextPreview()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="left">Слева</option>
+                            <option value="center" selected>По центру</option>
+                            <option value="right">Справа</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Вертикальная позиция:</label>
+                        <select id="logo-text-vertical" onchange="updateLogoTextPreview()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="top">Сверху</option>
+                            <option value="middle" selected>По центру</option>
+                            <option value="bottom">Снизу</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Тень текста:</label>
+                        <select id="logo-text-shadow" onchange="updateLogoTextPreview()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="none">Без тени</option>
+                            <option value="light" selected>Легкая тень</option>
+                            <option value="medium">Средняя тень</option>
+                            <option value="strong">Сильная тень</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label>Превью:</label>
+                        <div id="logo-text-preview" style="position: relative; display: inline-block; margin-top: 10px;">
+                            <img id="preview-logo-with-text" src="" style="max-width: 250px; max-height: 200px; display: block; border-radius: 10px;">
+                            <div id="preview-text-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; pointer-events: none;"></div>
+                        </div>
+                    </div>
+
+                    <button onclick="saveLogoTextSettings()" class="btn-save" style="margin-top: 20px; width: 100%;">💾 Сохранить настройки текста</button>
+                </div>
+
+                <hr style="margin: 40px 0; border: none; border-top: 2px solid #e0e0e0;">
+
                 <h3>Видимость секций</h3>
                 <div class="form-group">
                     <label style="display: flex; align-items: center; gap: 15px; cursor: pointer; padding: 15px; background: #f8f9fa; border-radius: 10px;">

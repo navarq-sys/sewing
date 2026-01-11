@@ -229,6 +229,57 @@ function loadLogo() {
     }
     // В любом случае показываем логотип
     logoImg.style.display = 'block';
+    
+    // Загружаем текст на логотипе
+    loadLogoText();
+}
+
+// Загрузка текста на логотипе
+function loadLogoText() {
+    const overlay = document.getElementById('logo-text-overlay');
+    if (!overlay) return;
+    
+    // Проверяем настройки текста
+    if (!data.logoText || !data.logoText.enabled || !data.logoText.text) {
+        overlay.style.display = 'none';
+        return;
+    }
+    
+    const settings = data.logoText;
+    
+    // Настройки тени
+    let textShadow = 'none';
+    if (settings.shadow === 'light') {
+        textShadow = '1px 1px 2px rgba(0,0,0,0.5)';
+    } else if (settings.shadow === 'medium') {
+        textShadow = '2px 2px 4px rgba(0,0,0,0.7)';
+    } else if (settings.shadow === 'strong') {
+        textShadow = '3px 3px 6px rgba(0,0,0,0.9)';
+    }
+    
+    // Настройки выравнивания
+    let justifyContent = 'center';
+    if (settings.align === 'left') justifyContent = 'flex-start';
+    else if (settings.align === 'right') justifyContent = 'flex-end';
+    
+    let alignItems = 'center';
+    if (settings.vertical === 'top') alignItems = 'flex-start';
+    else if (settings.vertical === 'bottom') alignItems = 'flex-end';
+    
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = justifyContent;
+    overlay.style.alignItems = alignItems;
+    overlay.innerHTML = `
+        <span style="
+            font-size: ${settings.fontSize}px;
+            color: ${settings.color};
+            font-family: ${settings.fontFamily};
+            font-weight: ${settings.fontWeight};
+            text-shadow: ${textShadow};
+            padding: 10px;
+            user-select: none;
+        ">${settings.text}</span>
+    `;
 }
 
 // Загрузка услуг

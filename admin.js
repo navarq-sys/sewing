@@ -865,6 +865,9 @@ function loadSettings() {
     // Загружаем настройку видимости услуг
     const showServices = data.settings?.showServices !== false; // по умолчанию true
     document.getElementById('show-services').checked = showServices;
+    
+    // Загружаем настройки текста на логотипе
+    loadLogoTextSettings();
 }
 
 function toggleServicesVisibility() {
@@ -879,6 +882,136 @@ function toggleServicesVisibility() {
     
     const status = showServices ? 'показаны' : 'скрыты';
     alert(`✓ Услуги теперь ${status} для посетителей`);
+}
+
+// ТЕКСТ НА ЛОГОТИПЕ
+function toggleLogoText() {
+    const isEnabled = document.getElementById('show-logo-text').checked;
+    const settingsDiv = document.getElementById('logo-text-settings');
+    settingsDiv.style.display = isEnabled ? 'block' : 'none';
+    
+    if (!data.logoText) {
+        data.logoText = {
+            enabled: isEnabled,
+            text: 'ULLA',
+            fontSize: 24,
+            color: '#ffffff',
+            fontFamily: 'Arial, sans-serif',
+            fontWeight: 'bold',
+            align: 'center',
+            vertical: 'middle',
+            shadow: 'light'
+        };
+    } else {
+        data.logoText.enabled = isEnabled;
+    }
+    
+    saveData();
+    updateLogoTextPreview();
+}
+
+function loadLogoTextSettings() {
+    if (!data.logoText) {
+        data.logoText = {
+            enabled: false,
+            text: 'ULLA',
+            fontSize: 24,
+            color: '#ffffff',
+            fontFamily: 'Arial, sans-serif',
+            fontWeight: 'bold',
+            align: 'center',
+            vertical: 'middle',
+            shadow: 'light'
+        };
+    }
+    
+    const settings = data.logoText;
+    
+    document.getElementById('show-logo-text').checked = settings.enabled;
+    document.getElementById('logo-text-settings').style.display = settings.enabled ? 'block' : 'none';
+    document.getElementById('logo-text-content').value = settings.text || '';
+    document.getElementById('logo-text-size').value = settings.fontSize || 24;
+    document.getElementById('text-size-value').textContent = (settings.fontSize || 24) + 'px';
+    document.getElementById('logo-text-color').value = settings.color || '#ffffff';
+    document.getElementById('logo-text-color-hex').value = settings.color || '#ffffff';
+    document.getElementById('logo-text-font').value = settings.fontFamily || 'Arial, sans-serif';
+    document.getElementById('logo-text-weight').value = settings.fontWeight || 'bold';
+    document.getElementById('logo-text-align').value = settings.align || 'center';
+    document.getElementById('logo-text-vertical').value = settings.vertical || 'middle';
+    document.getElementById('logo-text-shadow').value = settings.shadow || 'light';
+    
+    updateLogoTextPreview();
+}
+
+function updateLogoTextPreview() {
+    const previewImg = document.getElementById('preview-logo-with-text');
+    const previewOverlay = document.getElementById('preview-text-overlay');
+    
+    // Используем текущий логотип
+    const logoSrc = data.logo || 'logo-ulla.jpg';
+    previewImg.src = logoSrc;
+    
+    const text = document.getElementById('logo-text-content').value;
+    const fontSize = document.getElementById('logo-text-size').value;
+    const color = document.getElementById('logo-text-color').value;
+    const fontFamily = document.getElementById('logo-text-font').value;
+    const fontWeight = document.getElementById('logo-text-weight').value;
+    const align = document.getElementById('logo-text-align').value;
+    const vertical = document.getElementById('logo-text-vertical').value;
+    const shadow = document.getElementById('logo-text-shadow').value;
+    
+    // Обновляем hex поле
+    document.getElementById('logo-text-color-hex').value = color;
+    
+    // Настройки тени
+    let textShadow = 'none';
+    if (shadow === 'light') {
+        textShadow = '1px 1px 2px rgba(0,0,0,0.5)';
+    } else if (shadow === 'medium') {
+        textShadow = '2px 2px 4px rgba(0,0,0,0.7)';
+    } else if (shadow === 'strong') {
+        textShadow = '3px 3px 6px rgba(0,0,0,0.9)';
+    }
+    
+    // Настройки выравнивания
+    let justifyContent = 'center';
+    if (align === 'left') justifyContent = 'flex-start';
+    else if (align === 'right') justifyContent = 'flex-end';
+    
+    let alignItems = 'center';
+    if (vertical === 'top') alignItems = 'flex-start';
+    else if (vertical === 'bottom') alignItems = 'flex-end';
+    
+    previewOverlay.style.justifyContent = justifyContent;
+    previewOverlay.style.alignItems = alignItems;
+    previewOverlay.innerHTML = `
+        <span style="
+            font-size: ${fontSize}px;
+            color: ${color};
+            font-family: ${fontFamily};
+            font-weight: ${fontWeight};
+            text-shadow: ${textShadow};
+            padding: 10px;
+            user-select: none;
+        ">${text}</span>
+    `;
+}
+
+function saveLogoTextSettings() {
+    data.logoText = {
+        enabled: document.getElementById('show-logo-text').checked,
+        text: document.getElementById('logo-text-content').value,
+        fontSize: parseInt(document.getElementById('logo-text-size').value),
+        color: document.getElementById('logo-text-color').value,
+        fontFamily: document.getElementById('logo-text-font').value,
+        fontWeight: document.getElementById('logo-text-weight').value,
+        align: document.getElementById('logo-text-align').value,
+        vertical: document.getElementById('logo-text-vertical').value,
+        shadow: document.getElementById('logo-text-shadow').value
+    };
+    
+    saveData();
+    alert('✓ Настройки текста на логотипе сохранены!');
 }
 
 // Инициализация
