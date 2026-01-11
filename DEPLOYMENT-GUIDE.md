@@ -6,9 +6,10 @@
 3. [Вариант 2: Netlify (БЕСПЛАТНО)](#вариант-2-netlify-бесплатно)
 4. [Вариант 3: Vercel (БЕСПЛАТНО)](#вариант-3-vercel-бесплатно)
 5. [Вариант 4: Собственный сервер](#вариант-4-собственный-сервер)
-6. [Получение бесплатного домена](#получение-бесплатного-домена)
-7. [Настройка домена](#настройка-домена)
-8. [Резервное копирование](#резервное-копирование)
+6. [🔒 Защита админпанели](#-защита-админпанели)
+7. [Получение бесплатного домена](#получение-бесплатного-домена)
+8. [Настройка домена](#настройка-домена)
+9. [Резервное копирование](#резервное-копирование)
 
 ---
 
@@ -323,7 +324,356 @@ sudo certbot renew --dry-run
 
 ---
 
-## Настройка домена
+## 🔒 Защита админпанели
+
+### ⚠️ ВАЖНО: Текущая защита
+По умолчанию админпанель защищена только паролем `admin123` в JavaScript. **Это НЕ безопасно для продакшена!**
+
+### Уровень 1: Изменение пароля (минимум)
+
+#### В файле admin.js найдите и измените:
+```javascript
+// Было:
+if (password === 'admin123') {
+
+// Стало (придумайте сложный пароль):
+if (password === 'Ваш$СложныйПароль2024!') {
+```
+
+**Рекомендации для пароля:**
+- Минимум 12 символов
+- Используйте буквы, цифры, спецсимволы
+- Не используйте словарные слова
+- Не используйте личную информацию
+
+### Уровень 2: HTTP Basic Authentication (рекомендуется)
+
+#### Для Nginx на собственном сервере
+
+**Шаг 1: Создайте файл с паролем**
+```bash
+# Установите утилиту htpasswd
+sudo apt install apache2-utils -y
+
+# Создайте файл с паролем
+sudo htpasswd -c /etc/nginx/.htpasswd admin
+
+# Введите пароль когда попросит
+# Пароль будет зашифрован
+```
+
+**Шаг 2: Настройте Nginx**
+```bash
+sudo nano /etc/nginx/sites-available/sewing
+```
+
+Добавьте защиту для админпанели:
+```nginx
+server {
+    listen 80;
+    server_name ваш-домен.com;
+    root /var/www/sewing;
+    index index.html;
+    
+    # Обычные страницы доступны всем
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    
+    # Защита админпанели
+    location /admin.html {
+        auth_basic "Restricted Access";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+        try_files $uri =404;
+    }
+    
+    # Защита Visual Editor
+    location /visual-editor.html {
+        auth_basic "Restricted Access";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+        try_files $uri =404;
+    }
+    
+    # Защита JS файлов админки
+    location ~ ^/(admin\.js|visual-editor\.js)$ {
+        auth_basic "Restricted Access";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+    }
+}
+```
+
+```bash
+# Проверьте конфигурацию
+sudo nginx -t
+
+# Перезапустите Nginx
+sudo systemctl reload nginx
+```
+
+Теперь при входе в админпанель браузер запросит логин и пароль!
+
+#### Для Apache (.htaccess)
+
+**Шаг 1: Создайте файл с паролем**
+```bash
+htpasswd -c /var/www/.htpasswd admin
+```
+
+**Шаг 2: Создайте .htaccess в корне сайта**
+```bash
+nano /var/www/sewing/.htaccess
+```
+
+Содержимое:
+```apache
+# Защита админпанели
+<FilesMatch "(admin\.html|visual-editor\.html|admin\.js|visual-editor\.js)$">
+    AuthType Basic
+    AuthName "Restricted Access"
+    AuthUserFile /var/www/.htpasswd
+    Require valid-user
+</FilesMatch>
+```
+
+### Уровень 3: IP Whitelist (максимальная защита)
+
+#### Разрешить доступ только с определенных IP
+
+**Для Nginx:**
+```nginx
+location /admin.html {
+    # Разрешить только эти IP
+    allow 192.168.1.100;      # Ваш домашний IP
+    allow 10.0.0.0/24;         # Ваша локальная сеть
+    deny all;                  # Запретить всем остальным
+    
+    auth_basic "Restricted Access";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+    try_files $uri =404;
+}
+```
+
+**Для Apache (.htaccess):**
+```apache
+<FilesMatch "admin\.html">
+    Order Deny,Allow
+    Deny from all
+    Allow from 192.168.1.100
+    Allow from 10.0.0.0/24
+</FilesMatch>
+```
+
+**Узнать ваш IP:**
+- Перейдите на https://whatismyipaddress.com
+- Скопируйте ваш IPv4 адрес
+
+### Уровень 4: Дополнительные меры безопасности
+
+#### 1. Переименуйте админпанель
+```bash
+# Вместо admin.html используйте уникальное имя
+mv admin.html secret-panel-xyz123.html
+```
+
+Теперь админка доступна по адресу: `ваш-сайт.com/secret-panel-xyz123.html`
+
+#### 2. Настройте Fail2Ban (защита от брутфорса)
+```bash
+# Установка
+sudo apt install fail2ban -y
+
+# Создайте правило для Nginx
+sudo nano /etc/fail2ban/filter.d/nginx-auth.conf
+```
+
+Содержимое:
+```ini
+[Definition]
+failregex = ^ \[error\] \d+#\d+: \*\d+ user "\S+":? (password mismatch|was not found in), client: <HOST>, server: \S+, request: "\S+ \S+ HTTP/\d+\.\d+", host: "\S+"
+            ^ \[error\] \d+#\d+: \*\d+ no user/password was provided for basic authentication, client: <HOST>, server: \S+, request: "\S+ \S+ HTTP/\d+\.\d+", host: "\S+"
+ignoreregex =
+```
+
+```bash
+# Активируйте правило
+sudo nano /etc/fail2ban/jail.local
+```
+
+Добавьте:
+```ini
+[nginx-auth]
+enabled = true
+port = http,https
+logpath = /var/log/nginx/error.log
+maxretry = 3
+bantime = 3600
+findtime = 600
+```
+
+```bash
+# Перезапустите Fail2Ban
+sudo systemctl restart fail2ban
+
+# Проверьте статус
+sudo fail2ban-client status nginx-auth
+```
+
+#### 3. Включите SSL/HTTPS (обязательно!)
+```bash
+# Установите Certbot
+sudo apt install certbot python3-certbot-nginx -y
+
+# Получите бесплатный SSL сертификат
+sudo certbot --nginx -d ваш-домен.com
+
+# Автообновление сертификата
+sudo certbot renew --dry-run
+```
+
+#### 4. Ограничьте частоту запросов (Rate Limiting)
+
+**Для Nginx:**
+```nginx
+# В секции http добавьте
+http {
+    limit_req_zone $binary_remote_addr zone=adminlimit:10m rate=5r/m;
+    
+    server {
+        location /admin.html {
+            limit_req zone=adminlimit burst=2;
+            # остальные настройки
+        }
+    }
+}
+```
+
+Это ограничит запросы до 5 в минуту к админпанели.
+
+#### 5. Скройте версию веб-сервера
+
+**Для Nginx:**
+```bash
+sudo nano /etc/nginx/nginx.conf
+```
+
+Добавьте в секцию http:
+```nginx
+http {
+    server_tokens off;
+}
+```
+
+**Для Apache:**
+```apache
+ServerTokens Prod
+ServerSignature Off
+```
+
+#### 6. Настройте CORS и CSP заголовки
+
+**Для Nginx:**
+```nginx
+location / {
+    # Content Security Policy
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com;" always;
+    
+    # X-Frame-Options
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    
+    # X-Content-Type-Options
+    add_header X-Content-Type-Options "nosniff" always;
+    
+    # X-XSS-Protection
+    add_header X-XSS-Protection "1; mode=block" always;
+    
+    # Referrer Policy
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+}
+```
+
+### Уровень 5: VPN (для корпоративного использования)
+
+Настройте VPN и разрешите доступ к админпанели только через VPN.
+
+**WireGuard (простой и быстрый):**
+```bash
+# Установка
+sudo apt install wireguard -y
+
+# Генерация ключей
+wg genkey | tee privatekey | wg pubkey > publickey
+
+# Настройка
+sudo nano /etc/wireguard/wg0.conf
+```
+
+### Чеклист безопасности админпанели
+
+- [ ] Изменен стандартный пароль `admin123`
+- [ ] Настроен HTTP Basic Authentication
+- [ ] Включен HTTPS/SSL
+- [ ] Настроен Fail2Ban
+- [ ] Включен Rate Limiting
+- [ ] Скрыта версия сервера
+- [ ] Настроены security headers (CSP, X-Frame-Options)
+- [ ] Регулярно обновляется система: `sudo apt update && sudo apt upgrade`
+- [ ] Настроен firewall: `sudo ufw enable`
+- [ ] Логи проверяются регулярно: `tail -f /var/log/nginx/access.log`
+- [ ] Созданы резервные копии: экспорт данных из админки
+- [ ] Используются сложные пароли
+- [ ] Двухфакторная аутентификация (если возможно)
+
+### Мониторинг безопасности
+
+#### Проверка логов атак
+```bash
+# Неудачные попытки авторизации
+sudo grep "auth" /var/log/nginx/error.log | tail -20
+
+# Заблокированные IP в Fail2Ban
+sudo fail2ban-client status nginx-auth
+```
+
+#### Автоматические уведомления
+Настройте email уведомления при подозрительной активности:
+```bash
+# Установите mailutils
+sudo apt install mailutils -y
+
+# Создайте скрипт мониторинга
+sudo nano /usr/local/bin/security-monitor.sh
+```
+
+```bash
+#!/bin/bash
+LOGFILE="/var/log/nginx/error.log"
+EMAIL="ваш@email.com"
+ALERT_THRESHOLD=10
+
+# Подсчет неудачных попыток за последний час
+FAILED_ATTEMPTS=$(grep -c "password mismatch" $LOGFILE)
+
+if [ $FAILED_ATTEMPTS -gt $ALERT_THRESHOLD ]; then
+    echo "⚠️ ВНИМАНИЕ! Обнаружено $FAILED_ATTEMPTS неудачных попыток входа!" | mail -s "Security Alert" $EMAIL
+fi
+```
+
+```bash
+# Сделайте исполняемым
+sudo chmod +x /usr/local/bin/security-monitor.sh
+
+# Добавьте в cron (проверка каждый час)
+crontab -e
+```
+
+Добавьте строку:
+```
+0 * * * * /usr/local/bin/security-monitor.sh
+```
+
+---
+
+## Получение бесплатного домена
 
 ### Для GitHub Pages
 
