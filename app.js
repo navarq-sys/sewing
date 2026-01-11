@@ -608,6 +608,15 @@ document.addEventListener('DOMContentLoaded', () => {
     initMap();
     updateMapAddress();
     
+    // Применяем порядок элементов в зависимости от размера экрана
+    applyResponsiveOrder();
+    
+    // Запускаем автопроверку изменений
+    startAutoCheck();
+});
+
+// Функция автопроверки изменений
+function startAutoCheck() {
     // Автообновление при изменении localStorage в другой вкладке
     window.addEventListener('storage', (e) => {
         if (e.key === DATA_KEY && e.newValue) {
@@ -689,18 +698,6 @@ function applyVisualEditorStyles() {
     });
 }
 
-// Инициализация
-document.addEventListener('DOMContentLoaded', () => {
-    loadAllData();
-    switchLanguage(currentLang);
-    initMap();
-    
-    // Применяем порядок элементов в зависимости от размера экрана
-    applyResponsiveOrder();
-    
-    // Запускаем автопроверку изменений
-    startAutoCheck();
-});
 
 // Применение порядка элементов для разных устройств
 function applyResponsiveOrder() {
