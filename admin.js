@@ -765,26 +765,61 @@ function uploadLogo(event) {
         return;
     }
     
-    // Проверка размера файла (максимум 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-        alert('❌ Файл слишком большой. Максимальный размер: 2MB');
+    // Проверка размера файла (максимум 5MB для исходного)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('❌ Файл слишком большой. Максимальный размер: 5MB');
         return;
     }
     
     const reader = new FileReader();
     reader.onload = function(e) {
-        const logoData = e.target.result;
-        data.logo = logoData;
-        saveData();
-        
-        // Обновляем превью
-        const previewImg = document.getElementById('preview-logo');
-        const noLogoText = document.getElementById('no-logo-text');
-        previewImg.src = logoData;
-        previewImg.style.display = 'block';
-        noLogoText.style.display = 'none';
-        
-        alert('✓ Логотип загружен и сохранен!');
+        const img = new Image();
+        img.onload = function() {
+            // Оптимальный размер для логотипа - 400px по ширине
+            const maxWidth = 400;
+            const maxHeight = 300;
+            
+            let width = img.width;
+            let height = img.height;
+            
+            // Вычисляем новые размеры с сохранением пропорций
+            if (width > maxWidth) {
+                height = (height * maxWidth) / width;
+                width = maxWidth;
+            }
+            
+            if (height > maxHeight) {
+                width = (width * maxHeight) / height;
+                height = maxHeight;
+            }
+            
+            // Создаем canvas для изменения размера
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Конвертируем в base64 с оптимальным качеством
+            const logoData = canvas.toDataURL('image/jpeg', 0.85);
+            
+            data.logo = logoData;
+            saveData();
+            
+            // Обновляем превью
+            const previewImg = document.getElementById('preview-logo');
+            const noLogoText = document.getElementById('no-logo-text');
+            previewImg.src = logoData;
+            previewImg.style.display = 'block';
+            noLogoText.style.display = 'none';
+            
+            const originalSize = (file.size / 1024).toFixed(1);
+            const optimizedSize = (logoData.length * 0.75 / 1024).toFixed(1); // примерный размер base64
+            
+            alert(`✓ Логотип загружен!\n📐 Размер: ${Math.round(width)}×${Math.round(height)}px\n📦 Исходный размер: ${originalSize}KB\n✨ Оптимизировано: ${optimizedSize}KB`);
+        };
+        img.src = e.target.result;
     };
     reader.readAsDataURL(file);
 }
