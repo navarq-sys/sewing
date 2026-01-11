@@ -868,6 +868,9 @@ function loadSettings() {
     
     // Загружаем настройки текста на логотипе
     loadLogoTextSettings();
+    
+    // Загружаем стили услуг
+    loadServicesStyle();
 }
 
 function toggleServicesVisibility() {
@@ -1012,6 +1015,66 @@ function saveLogoTextSettings() {
     
     saveData();
     alert('✓ Настройки текста на логотипе сохранены!');
+}
+
+// СТИЛИЗАЦИЯ УСЛУГ
+function loadServicesStyle() {
+    if (!data.servicesStyle) {
+        data.servicesStyle = {
+            titleSize: 28,
+            titleFont: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+            titleColor: '#2c3e50',
+            titleWeight: 'bold',
+            serviceTitleSize: 20,
+            serviceTitleFont: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+            serviceDescSize: 16,
+            serviceDescFont: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+            servicePriceSize: 18
+        };
+    }
+    
+    const style = data.servicesStyle;
+    
+    document.getElementById('services-title-size').value = style.titleSize || 28;
+    document.getElementById('title-size-value').textContent = (style.titleSize || 28) + 'px';
+    document.getElementById('services-title-font').value = style.titleFont || "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    document.getElementById('services-title-color').value = style.titleColor || '#2c3e50';
+    document.getElementById('services-title-color-hex').value = style.titleColor || '#2c3e50';
+    document.getElementById('services-title-weight').value = style.titleWeight || 'bold';
+    
+    document.getElementById('service-title-size').value = style.serviceTitleSize || 20;
+    document.getElementById('service-title-size-value').textContent = (style.serviceTitleSize || 20) + 'px';
+    document.getElementById('service-title-font').value = style.serviceTitleFont || "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    
+    document.getElementById('service-desc-size').value = style.serviceDescSize || 16;
+    document.getElementById('service-desc-size-value').textContent = (style.serviceDescSize || 16) + 'px';
+    document.getElementById('service-desc-font').value = style.serviceDescFont || "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    
+    document.getElementById('service-price-size').value = style.servicePriceSize || 18;
+    document.getElementById('service-price-size-value').textContent = (style.servicePriceSize || 18) + 'px';
+}
+
+function updateServicesStylePreview() {
+    // Обновляем hex поле для цвета заголовка
+    const titleColor = document.getElementById('services-title-color').value;
+    document.getElementById('services-title-color-hex').value = titleColor;
+}
+
+function saveServicesStyle() {
+    data.servicesStyle = {
+        titleSize: parseInt(document.getElementById('services-title-size').value),
+        titleFont: document.getElementById('services-title-font').value,
+        titleColor: document.getElementById('services-title-color').value,
+        titleWeight: document.getElementById('services-title-weight').value,
+        serviceTitleSize: parseInt(document.getElementById('service-title-size').value),
+        serviceTitleFont: document.getElementById('service-title-font').value,
+        serviceDescSize: parseInt(document.getElementById('service-desc-size').value),
+        serviceDescFont: document.getElementById('service-desc-font').value,
+        servicePriceSize: parseInt(document.getElementById('service-price-size').value)
+    };
+    
+    saveData();
+    alert('✓ Стили услуг сохранены! Обновите главную страницу, чтобы увидеть изменения.');
 }
 
 // Инициализация

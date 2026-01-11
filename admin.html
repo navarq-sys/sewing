@@ -156,6 +156,97 @@
                         </div>
                     </label>
                 </div>
+
+                <hr style="margin: 40px 0; border: none; border-top: 2px solid #e0e0e0;">
+
+                <h3>📝 Стилизация раздела услуг</h3>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    
+                    <h4 style="margin-top: 0; color: #2c3e50;">Заголовок "Mūsu pakalpojumi"</h4>
+                    
+                    <div class="form-group">
+                        <label>Размер шрифта заголовка (px):</label>
+                        <input type="range" id="services-title-size" min="16" max="48" value="28" oninput="updateServicesStylePreview(); document.getElementById('title-size-value').textContent = this.value + 'px'">
+                        <span id="title-size-value" style="font-weight: bold; color: #3498db;">28px</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Шрифт заголовка:</label>
+                        <select id="services-title-font" onchange="updateServicesStylePreview()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI</option>
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                            <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                            <option value="Impact, fantasy">Impact</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Цвет заголовка:</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="color" id="services-title-color" value="#2c3e50" onchange="updateServicesStylePreview()" style="width: 60px; height: 40px; cursor: pointer; border: none; border-radius: 5px;">
+                            <input type="text" id="services-title-color-hex" value="#2c3e50" oninput="document.getElementById('services-title-color').value = this.value; updateServicesStylePreview()" style="width: 100px; padding: 8px; border: 2px solid #ddd; border-radius: 5px;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Жирность заголовка:</label>
+                        <select id="services-title-weight" onchange="updateServicesStylePreview()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="normal">Обычный</option>
+                            <option value="bold" selected>Жирный</option>
+                            <option value="bolder">Очень жирный</option>
+                        </select>
+                    </div>
+
+                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+
+                    <h4 style="color: #2c3e50;">Карточки услуг</h4>
+
+                    <div class="form-group">
+                        <label>Размер шрифта названия услуги (px):</label>
+                        <input type="range" id="service-title-size" min="14" max="32" value="20" oninput="updateServicesStylePreview(); document.getElementById('service-title-size-value').textContent = this.value + 'px'">
+                        <span id="service-title-size-value" style="font-weight: bold; color: #3498db;">20px</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Шрифт названия услуги:</label>
+                        <select id="service-title-font" onchange="updateServicesStylePreview()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI</option>
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                            <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Размер шрифта описания (px):</label>
+                        <input type="range" id="service-desc-size" min="12" max="24" value="16" oninput="updateServicesStylePreview(); document.getElementById('service-desc-size-value').textContent = this.value + 'px'">
+                        <span id="service-desc-size-value" style="font-weight: bold; color: #3498db;">16px</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Шрифт описания:</label>
+                        <select id="service-desc-font" onchange="updateServicesStylePreview()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                            <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI</option>
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Размер шрифта цены (px):</label>
+                        <input type="range" id="service-price-size" min="14" max="28" value="18" oninput="updateServicesStylePreview(); document.getElementById('service-price-size-value').textContent = this.value + 'px'">
+                        <span id="service-price-size-value" style="font-weight: bold; color: #3498db;">18px</span>
+                    </div>
+
+                    <button onclick="saveServicesStyle()" class="btn-save" style="margin-top: 20px; width: 100%;">💾 Сохранить стили услуг</button>
+                </div>
             </div>
         </div>
 

@@ -304,6 +304,9 @@ function loadServices() {
         return;
     }
     
+    // Применяем стили к заголовку секции
+    applyServicesStyles();
+    
     console.log('📋 Загрузка услуг:', data.services.length, 'услуг');
     servicesList.innerHTML = '';
     
@@ -312,19 +315,48 @@ function loadServices() {
         return;
     }
     
+    // Получаем стили для услуг
+    const style = data.servicesStyle || {};
+    const titleFont = style.serviceTitleFont || "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    const titleSize = style.serviceTitleSize || 20;
+    const descFont = style.serviceDescFont || "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    const descSize = style.serviceDescSize || 16;
+    const priceSize = style.servicePriceSize || 18;
+    
     data.services.forEach(service => {
         const serviceItem = document.createElement('div');
         serviceItem.className = 'service-item';
         serviceItem.style.cssText = 'background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-left: 3px solid #667eea;';
         serviceItem.innerHTML = `
-            <h3 style="color: #667eea; margin-bottom: 5px;">${service.title[currentLang]}</h3>
-            <p style="color: #666; font-size: 0.9rem; margin: 5px 0;">${service.description[currentLang]}</p>
-            <div class="service-price" style="color: #764ba2; font-weight: bold; margin-top: 5px;">${service.price[currentLang]}</div>
+            <h3 style="color: #667eea; margin-bottom: 5px; font-family: ${titleFont}; font-size: ${titleSize}px;">${service.title[currentLang]}</h3>
+            <p style="color: #666; margin: 5px 0; font-family: ${descFont}; font-size: ${descSize}px;">${service.description[currentLang]}</p>
+            <div class="service-price" style="color: #764ba2; font-weight: bold; margin-top: 5px; font-size: ${priceSize}px;">${service.price[currentLang]}</div>
         `;
         servicesList.appendChild(serviceItem);
     });
     
     console.log('✓ Услуги загружены, HTML длина:', servicesList.innerHTML.length);
+}
+
+// Применение стилей к заголовку секции услуг
+function applyServicesStyles() {
+    const servicesTitle = document.querySelector('.services h2');
+    if (!servicesTitle) return;
+    
+    const style = data.servicesStyle || {};
+    
+    if (style.titleSize) {
+        servicesTitle.style.fontSize = style.titleSize + 'px';
+    }
+    if (style.titleFont) {
+        servicesTitle.style.fontFamily = style.titleFont;
+    }
+    if (style.titleColor) {
+        servicesTitle.style.color = style.titleColor;
+    }
+    if (style.titleWeight) {
+        servicesTitle.style.fontWeight = style.titleWeight;
+    }
 }
 
 // Загрузка контактов
