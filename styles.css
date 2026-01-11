@@ -96,7 +96,7 @@ header {
 .logo-wrapper {
     position: relative;
     display: block;
-    max-width: 380px;
+    max-width: 250px;
     width: 100%;
     margin: 0 auto;
 }
@@ -105,16 +105,16 @@ header {
     display: block;
     width: 100%;
     height: auto;
-    max-height: 400px;
+    max-height: 250px;
     object-fit: contain;
-    border-radius: 20px;
+    border-radius: 15px;
     box-shadow: 
-        0 15px 40px rgba(102, 126, 234, 0.4),
-        0 8px 20px rgba(118, 75, 162, 0.2);
+        0 10px 30px rgba(102, 126, 234, 0.3),
+        0 5px 15px rgba(118, 75, 162, 0.2);
     transition: var(--transition);
     animation: logoFadeIn 1s ease-out;
     background: white;
-    padding: 10px;
+    padding: 15px;
 }
 
 .logo-shine {
