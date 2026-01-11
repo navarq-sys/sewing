@@ -220,12 +220,12 @@ function loadLogo() {
     const logoImg = document.getElementById('site-logo');
     if (!logoImg) return;
     
+    // Если в данных есть пользовательский логотип, используем его
     if (data.logo) {
         logoImg.src = data.logo;
-        logoImg.style.display = 'block';
-    } else {
-        logoImg.style.display = 'none';
     }
+    // В любом случае показываем логотип (он уже задан в HTML)
+    logoImg.style.display = 'block';
 }
 
 // Загрузка услуг
