@@ -95,15 +95,17 @@ header {
 
 .logo-wrapper {
     position: relative;
-    display: inline-block;
+    display: block;
     max-width: 380px;
     width: 100%;
     margin: 0 auto;
 }
 
 #site-logo {
+    display: block;
     width: 100%;
     height: auto;
+    max-height: 400px;
     object-fit: contain;
     border-radius: 20px;
     box-shadow: 
