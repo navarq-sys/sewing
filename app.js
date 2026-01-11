@@ -718,7 +718,7 @@ function applyResponsiveOrder() {
     }
     
     const order = data.elementOrder[device];
-    if (!order) return;
+    if (!order || Object.keys(order).length === 0) return;
     
     // Мапинг ID элементов к селекторам
     const selectorMap = {
@@ -729,23 +729,16 @@ function applyResponsiveOrder() {
         'map-section': '.map-section'
     };
     
-    // Делаем main flexbox контейнером
-    const main = document.querySelector('main');
-    if (main) {
-        main.style.display = 'flex';
-        main.style.flexDirection = 'column';
-        
-        // Применяем порядок
-        Object.keys(order).forEach(elementId => {
-            const selector = selectorMap[elementId];
-            if (selector) {
-                const element = document.querySelector(selector);
-                if (element) {
-                    element.style.order = order[elementId];
-                }
+    // Применяем порядок только если он задан
+    Object.keys(order).forEach(elementId => {
+        const selector = selectorMap[elementId];
+        if (selector) {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.order = order[elementId];
             }
-        });
-    }
+        }
+    });
 }
 
 // Обновляем порядок при изменении размера окна
@@ -754,6 +747,4 @@ window.addEventListener('resize', () => {
     window.resizeTimer = setTimeout(() => {
         applyResponsiveOrder();
     }, 250);
-});
-    }, 2000);
 });
