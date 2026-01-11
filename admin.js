@@ -1157,9 +1157,129 @@ function saveLocationStyle() {
     alert('✓ Стили местоположения сохранены! Обновите главную страницу, чтобы увидеть изменения.');
 }
 
+// СЛОГАН (TAGLINE)
+function loadTagline() {
+    if (!data.tagline) {
+        data.tagline = {
+            lv: "Individuāla pieeja katram klientam",
+            ru: "Индивидуальный подход к каждому клиенту"
+        };
+    }
+    
+    document.getElementById('tagline-lv').value = data.tagline.lv || '';
+    document.getElementById('tagline-ru').value = data.tagline.ru || '';
+}
+
+function updateTagline() {
+    // Просто для обратной связи при вводе
+}
+
+function saveTagline() {
+    data.tagline = {
+        lv: document.getElementById('tagline-lv').value,
+        ru: document.getElementById('tagline-ru').value
+    };
+    
+    saveData();
+    alert('✓ Слоган сохранен! Обновите главную страницу, чтобы увидеть изменения.');
+}
+
+async function translateTagline() {
+    const sourceLang = 'lv';
+    const targetLang = 'ru';
+    const text = document.getElementById('tagline-lv').value;
+    
+    if (!text) {
+        alert('Введите текст на латышском для перевода');
+        return;
+    }
+    
+    try {
+        const response = await fetch('https://libretranslate.com/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                q: text,
+                source: sourceLang,
+                target: targetLang,
+                format: 'text'
+            })
+        });
+        
+        const result = await response.json();
+        if (result.translatedText) {
+            document.getElementById('tagline-ru').value = result.translatedText;
+            alert('✓ Перевод выполнен!');
+        }
+    } catch (error) {
+        console.error('Ошибка перевода:', error);
+        alert('❌ Ошибка перевода. Проверьте подключение к интернету.');
+    }
+}
+
+// БЭКАП ДАННЫХ
+function exportData() {
+    const dataStr = JSON.stringify(data, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    
+    const date = new Date().toISOString().split('T')[0];
+    link.download = `sewing-backup-${date}.json`;
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    alert('✓ Данные экспортированы! Файл загружен.');
+}
+
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (!confirm('⚠️ ВНИМАНИЕ! Импорт полностью заменит все текущие данные. Продолжить?')) {
+        event.target.value = '';
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            
+            // Проверяем структуру данных
+            if (!importedData.services && !importedData.contact && !importedData.categories) {
+                throw new Error('Неверный формат файла');
+            }
+            
+            // Сохраняем импортированные данные
+            data = importedData;
+            saveData();
+            
+            alert('✓ Данные успешно импортированы! Страница будет перезагружена.');
+            location.reload();
+        } catch (error) {
+            console.error('Ошибка импорта:', error);
+            alert('❌ Ошибка импорта данных. Проверьте формат файла.');
+        }
+        
+        // Очищаем input
+        event.target.value = '';
+    };
+    
+    reader.readAsText(file);
+}
+
 // Инициализация
 document.addEventListener('DOMContentLoaded', () => {
     if (!checkAuth()) return;
     loadServices();
     loadSettings();
+    loadTagline();
 });

@@ -209,6 +209,7 @@ function switchLanguage(lang) {
     });
     
     loadLogo();
+    loadTagline();
     loadServices();
     loadContact();
     loadCategories();
@@ -216,6 +217,19 @@ function switchLanguage(lang) {
     
     // Применяем сохраненные стили из Visual Editor
     applyVisualEditorStyles();
+}
+
+// Загрузка слогана
+function loadTagline() {
+    const taglineElement = document.querySelector('.tagline');
+    if (!taglineElement) return;
+    
+    if (data.tagline && data.tagline[currentLang]) {
+        taglineElement.textContent = data.tagline[currentLang];
+    } else {
+        // Дефолтный текст
+        taglineElement.textContent = translations[currentLang].tagline;
+    }
 }
 
 // Загрузка логотипа
@@ -606,6 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     loadLogo();
     loadLogoText();
+    loadTagline();
     loadServices();
     loadContact();
     loadCategories();
@@ -651,6 +666,7 @@ function startAutoCheck() {
             console.log('🔄 Обнаружены изменения, перезагружаем...');
             data = JSON.parse(newDataStr);
             loadLogo();
+            loadTagline();
             loadServices();
             loadContact();
             loadCategories();

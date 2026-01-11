@@ -149,6 +149,38 @@
 
                 <hr style="margin: 40px 0; border: none; border-top: 2px solid #e0e0e0;">
 
+                <h3>Слоган (Tagline)</h3>
+                <div class="form-group">
+                    <label>Слоган (латышский):</label>
+                    <input type="text" id="tagline-lv" placeholder="Individuāla pieeja katram klientam" oninput="updateTagline()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px;">
+                </div>
+                <div class="form-group">
+                    <label>Слоган (русский):</label>
+                    <div class="input-with-translate">
+                        <input type="text" id="tagline-ru" placeholder="Индивидуальный подход к каждому клиенту" oninput="updateTagline()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px;">
+                        <button type="button" class="btn-translate" onclick="translateTagline()" title="Перевести с латышского">🌐</button>
+                    </div>
+                </div>
+                <button onclick="saveTagline()" class="btn-save" style="margin-top: 10px; width: 100%;">💾 Сохранить слоган</button>
+
+                <hr style="margin: 40px 0; border: none; border-top: 2px solid #e0e0e0;">
+
+                <h3>Резервное копирование</h3>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button onclick="exportData()" class="btn-save" style="flex: 1; background: linear-gradient(135deg, #27ae60 0%, #229954 100%);">
+                        📥 Экспорт данных
+                    </button>
+                    <button onclick="document.getElementById('import-file').click()" class="btn-save" style="flex: 1; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">
+                        📤 Импорт данных
+                    </button>
+                </div>
+                <input type="file" id="import-file" accept=".json" onchange="importData(event)" style="display: none;">
+                <p style="color: #666; font-size: 0.9rem; margin-top: 10px;">
+                    💡 Экспорт сохранит все данные в JSON файл. Импорт восстановит данные из файла.
+                </p>
+
+                <hr style="margin: 40px 0; border: none; border-top: 2px solid #e0e0e0;">
+
                 <h3>Видимость секций</h3>
                 <div class="form-group">
                     <label style="display: flex; align-items: center; gap: 15px; cursor: pointer; padding: 15px; background: #f8f9fa; border-radius: 10px;">
