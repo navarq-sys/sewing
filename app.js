@@ -601,12 +601,22 @@ function applyLocationStyles() {
 
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
+    // Загружаем данные перед всем остальным
+    data = loadAllData();
+    
     loadLogo();
+    loadLogoText();
     loadServices();
     loadContact();
     loadCategories();
     initMap();
     updateMapAddress();
+    
+    // Применяем стили
+    applyServicesStyles();
+    applyContactStyles();
+    applyLocationStyles();
+    applyVisualEditorStyles();
     
     // Применяем порядок элементов в зависимости от размера экрана
     applyResponsiveOrder();
